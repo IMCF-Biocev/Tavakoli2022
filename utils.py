@@ -47,7 +47,7 @@ def measure(shifted_axons, measurements, prev_tip, columns, origin, name):
     ''' Measure axons and save the results to measurements dictionary'''
 
     total_growth = np.linalg.norm(shifted_axons[-1][-1] - shifted_axons[0][-1])
-    total_speed = total_growth / 900 * len(shifted_axons)
+    total_speed = total_growth / len(shifted_axons)
 
     # compute total angle change
     x = shifted_axons[0][-1]
@@ -60,7 +60,7 @@ def measure(shifted_axons, measurements, prev_tip, columns, origin, name):
 
     for i, axon in enumerate(shifted_axons):
         measurements[columns[0]].append(name) # add name of a measurement
-        current_time = 900 * i
+        current_time = i
         print('time:', current_time)
         measurements[columns[1]].append(current_time) # add time to measurements
 
@@ -100,15 +100,23 @@ def measure(shifted_axons, measurements, prev_tip, columns, origin, name):
         
         
         print('angle change at time', current_time, 'is', angle)
-        measurements[columns[6]].append(angle)
+        measurements[columns[6]].append(180 - angle)
         
         prev_tip = current_tip
         prev_time = current_time
 
-        measurements[columns[7]].append(total_growth)
-        measurements[columns[8]].append(total_speed)
-        measurements[columns[9]].append(angle)
-    
+        measurements[columns[7]].append(np.nan)
+        measurements[columns[8]].append(np.nan)
+        measurements[columns[9]].append(np.nan)
+
+    # compute the angle between the first and last axon
+    total_angle = np.degrees(np.arccos(origin @ y))
+
+    measurements[columns[7]][-1] = total_growth
+    measurements[columns[8]][-1] = total_speed
+    measurements[columns[9]][-1] = 180 - total_angle
+
     measurements = pd.DataFrame(measurements)
     measurements.to_csv('measurements.csv', index=False)
+
     return measurements
