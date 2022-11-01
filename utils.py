@@ -4,6 +4,7 @@ import numpy as np
 import re
 from collections import defaultdict
 import pandas as pd
+import matplotlib.pyplot as plt
 
 def read_axon(folder_name):
     '''Reads the axon tracing data from the folder and returns the data as an array'''
@@ -109,14 +110,52 @@ def measure(shifted_axons, measurements, prev_tip, columns, origin, name):
         measurements[columns[8]].append(np.nan)
         measurements[columns[9]].append(np.nan)
 
+    first_axon = shifted_axons[0][-1]
+    first_axon = first_axon / np.linalg.norm(first_axon)
     # compute the angle between the first and last axon
-    total_angle = np.degrees(np.arccos(origin @ y))
+    total_angle = np.degrees(np.arccos(first_axon @ y))
+    
+    # use matplotlib to plot vectors 
+    # plt.quiver([0, 0], [0, 0], [origin[0], y[0]], [origin[1], y[1]], angles='xy', scale_units='xy', scale=1)
+    
+    # plt.quiver([0, 0], [0, 0], [origin[0], first_axon[0]], [origin[1], first_axon[1]], angles='xy', scale_units='xy', scale=1)
+    # plt.xlim(-1, 1)
+    # plt.ylim(-1, 1)
+    # plt.show()
 
     measurements[columns[7]][-1] = total_growth
     measurements[columns[8]][-1] = total_speed
-    measurements[columns[9]][-1] = 180 - total_angle
+    measurements[columns[9]][-1] = total_angle
 
     measurements = pd.DataFrame(measurements)
     measurements.to_csv('measurements.csv', index=False)
 
     return measurements
+
+
+#     # print('what is the name of a measurement?')
+# name = 'x'
+# # print('where is it located?')
+# folder_name = 'data'
+
+# axons = read_axon(folder_name)
+
+# shifted_axons = shift_axon(axons)
+
+# # check if there is already a file with measurements
+# if os.path.isfile(f'measurements.csv'):
+#     measurements = pd.read_csv('measurements.csv')
+#     # create dictionary from the dataframe
+#     measurements = measurements.to_dict('list')
+# else:
+#     measurements = defaultdict(list) # set measurements dictionary
+
+# # set columns names 
+# columns = ['Name of a measurement', 'Time', 'Coordinate of the tip node', 'Axon length ($\mu m$)', 'Speed from $t_{i-1}$ to $t_{i}$ ($\mu m / \text{sec}$)',
+#         'Axon growth distance from $t_{i-1}$ to $t_{i}$ ($\mu m$)',  'Angle change from $t_{i-1}$ to $t_{i}$ (%)', 'Total growth during all time ($\mu m$)', 
+#         'Total speed during all time ($\mu m / \text{sec}$)', 'Total angle change (%)']
+
+# origin = shifted_axons[0][0] # set origin
+# prev_tip = origin
+
+# measurements = measure(shifted_axons, measurements, prev_tip, columns, origin, name)
