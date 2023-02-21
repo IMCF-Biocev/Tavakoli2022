@@ -1,6 +1,6 @@
 # Tracing and measurements of axons during development
-The project measures axonal growth speed and direction during development. Conducted at IMCF Biocev in collaboration with Mitra Tavakoli of the Biotechnology and Biomedicine Centre, Academy of Sciences of the Czech Republic and Charles University.
-
+The project measures axonal growth speed and direction during development. Conducted at IMCF Biocev in collaboration with Mitra Tavakoli, Institute of Biotechnology of the Czech Academy of Sciences.
+## Organization
 
 | Time | Coordinate of the tip node | Growth in length ($\mu m$) | Speed from $t_{i}$ to $t_{i+1}$ ($\mu m$/ minute) | Total speed during all time | Angle change |
 | --- | --- | --- | --- | --- | --- |
