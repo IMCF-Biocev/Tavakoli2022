@@ -1,11 +1,31 @@
 # Tracing and measurements of axons during development
-The project measures axonal growth speed and direction during development. Conducted at IMCF Biocev in collaboration with Mitra Tavakoli, Institute of Biotechnology of the Czech Academy of Sciences.
-## Organization
+This project is aimed at analyzing axon growth data to measure various growth parameters and generate a csv report on the findings. The raw data are coming from Fiji's [SNT plugin](https://imagej.net/plugins/snt/) manual axon tracing. These data are parsed and processed to extract information about axons growth over time, which is then used to generate the measurements report.
 
-| Time | Coordinate of the tip node | Growth in length ($\mu m$) | Speed from $t_{i}$ to $t_{i+1}$ ($\mu m$/ minute) | Total speed during all time | Angle change |
-| --- | --- | --- | --- | --- | --- |
-| 1 | $(x, y, z)$ | $l_{1}$ - length of axon in the beginning | $u_{1}$ | $u_{\text{total}}$ | $\alpha_{1}$ |
-| 2 | $(x, y, z)$ | $l_{2}$ | $u_{2}$ | $u_{\text{total}}$ | $\alpha_{2}$ |
-| 3 | $(x, y, z)$ | $l_{3}$ | $u_{3}$ | $u_{\text{total}}$ | $\alpha_{3}$ |
-| … | … | … | … | … | … |
-| n | $(x, y, z)$ | $l_{n}$ - length of axon at the end | $u_{n}$ | $u_{\text{total}}$ | $\alpha_{n}$ |
+## Installation
+To use this project, you will need to have Python 3.9 or later installed on your system. You can download Python from the official website.
+
+You will also need to install the following packages:
+
+numpy
+pandas
+You can install these packages using pip by running the following command:
+```
+pip install numpy pandas
+```
+Alternatively, you can use the available cfg/environment.yml file with the complete conda environment. Read instructions [here](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file) on how to use it.
+## Usage
+To run the full project you can use run.sh file. Set correct directory and activate conda environment first.
+
+## Project Structure
+The project folder contains the following files and directories:
+
+README.md: The project README file, which provides an overview of the project.
+main.py: The main script file, which contains the main() function that runs the project.
+utils: A directory that contains utility functions used in the project.
+data: A directory that contains the raw and parsed data used in the project.
+raw: A directory that contains the raw data files.
+parsed: A directory that contains the parsed data files.
+res: A directory that contains the output measurements report file.
+
+## Acknowledgments
+This project was created for research purposes only at IMCF Biocev.
