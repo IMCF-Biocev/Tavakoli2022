@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 
 def read_axon(folder_name):
     '''Reads the axon tracing data from the folder and returns the data as an array'''
-
     files =  os.listdir(folder_name + '/') 
     files = natsorted(files)
 
@@ -28,7 +27,6 @@ def read_axon(folder_name):
 
 def shift_axon(axons):
     '''Shifts the axon to align origins in all time points'''
-    
     # shift the axons to the single origin
     origin = axons[0][0]
     shifted_axons = [axons[0]]
@@ -44,118 +42,72 @@ def shift_axon(axons):
     shifted_axons = [axons - origin for axons in shifted_axons]
     return shifted_axons
 
-def measure(shifted_axons, measurements, prev_tip, columns, origin, name):
+def measure(arr, measurements, columns, name):
     ''' Measure axons and save the results to measurements dictionary'''
+    origin = arr[0] # first coord
 
-    total_growth = np.linalg.norm(shifted_axons[-1][-1] - shifted_axons[0][-1])
-    total_speed = total_growth / len(shifted_axons)
-
+    total_growth = np.linalg.norm(arr[-1] - origin) # compute total growth distance as a norm of total vector of growth
+    total_speed = total_growth / len(arr) # compute total speed as a total growth distance divided by the number of time points
+    
     # compute total angle change
-    x = shifted_axons[0][-1]
-    x = x / np.linalg.norm(x)
+    x = origin / np.linalg.norm(origin) # normalize the vector
 
-    y = shifted_axons[-1][-1]
-    y = y / np.linalg.norm(y)
+    y = arr[-1] # last coord
+    y = y / np.linalg.norm(y) # normalize the vector
 
-    angle = np.degrees(np.arccos(x @ y))
+    total_angle = np.degrees(np.arccos(x @ y))
 
-    for i, axon in enumerate(shifted_axons):
+    prev_node = origin
+    prev_time = 0
+
+    for i, node in enumerate(arr):
         measurements[columns[0]].append(name) # add name of a measurement
         current_time = i
-        print('time:', current_time)
         measurements[columns[1]].append(current_time) # add time to measurements
 
         # add coords to measurements
-        print('last tip is', axon[-1])
-        measurements[columns[2]].append(axon[-1])
+        measurements[columns[2]].append(node)
 
         # compute the distance between first and last coord and add it to measurements
-        axon_length = np.linalg.norm(origin - axon[-1])
-        print('axon growth at time', current_time, 'is', axon_length)
+        axon_length = np.linalg.norm(node - origin)
         measurements[columns[3]].append(axon_length)
-
-        current_tip = axon[-1]
         
         if i == 0:
             growth_dist = 0
             speed = 0
             angle = 0
         else: 
-            growth_dist = np.linalg.norm(current_tip - prev_tip)
-            speed = growth_dist / (current_time - prev_time)
+            growth_dist = np.linalg.norm(node - prev_node) # compute growth distance as a norm of a vector between two points
+            speed = growth_dist / (current_time - prev_time) # compute speed as a distance between two points divided by the time difference, even though time difference is always 1 in our case
             
-            prev_prev_tip = shifted_axons[i - 2][-1] if i >= 2 else origin
+            prev_prev_node = arr[i - 2] if i >= 2 else origin
 
-            x = prev_prev_tip - prev_tip
+            x = prev_prev_node - prev_node
             x = x / np.linalg.norm(x)
 
-            y = current_tip - prev_tip
+            y = node - prev_node
             y = y / np.linalg.norm(y)
 
             angle = np.degrees(np.arccos(x @ y))
 
         # add speed to measurements
-        print('speed of growth at time', current_time, 'is', speed)
         measurements[columns[4]].append(speed)
         measurements[columns[5]].append(growth_dist)
-        
-        
-        print('angle change at time', current_time, 'is', angle)
         measurements[columns[6]].append(180 - angle)
         
-        prev_tip = current_tip
+        prev_node = node
         prev_time = current_time
 
         measurements[columns[7]].append(np.nan)
         measurements[columns[8]].append(np.nan)
         measurements[columns[9]].append(np.nan)
-
-    first_axon = shifted_axons[0][-1]
-    first_axon = first_axon / np.linalg.norm(first_axon)
-    # compute the angle between the first and last axon
-    total_angle = np.degrees(np.arccos(first_axon @ y))
     
-    # use matplotlib to plot vectors 
-    # plt.quiver([0, 0], [0, 0], [origin[0], y[0]], [origin[1], y[1]], angles='xy', scale_units='xy', scale=1)
-    
-    # plt.quiver([0, 0], [0, 0], [origin[0], first_axon[0]], [origin[1], first_axon[1]], angles='xy', scale_units='xy', scale=1)
-    # plt.xlim(-1, 1)
-    # plt.ylim(-1, 1)
-    # plt.show()
 
     measurements[columns[7]][-1] = total_growth
     measurements[columns[8]][-1] = total_speed
     measurements[columns[9]][-1] = total_angle
 
     measurements = pd.DataFrame(measurements)
-    measurements.to_csv('measurements.csv', index=False)
+    # measurements.to_csv('measurements.csv', index=False)
 
     return measurements
-
-
-#     # print('what is the name of a measurement?')
-# name = 'x'
-# # print('where is it located?')
-# folder_name = 'data'
-
-# axons = read_axon(folder_name)
-
-# shifted_axons = shift_axon(axons)
-
-# # check if there is already a file with measurements
-# if os.path.isfile(f'measurements.csv'):
-#     measurements = pd.read_csv('measurements.csv')
-#     # create dictionary from the dataframe
-#     measurements = measurements.to_dict('list')
-# else:
-#     measurements = defaultdict(list) # set measurements dictionary
-
-# # set columns names 
-# columns = ['Name of a measurement', 'Time', 'Coordinate of the tip node', 'Axon length ($\mu m$)', 'Speed from $t_{i-1}$ to $t_{i}$ ($\mu m / \text{sec}$)',
-#         'Axon growth distance from $t_{i-1}$ to $t_{i}$ ($\mu m$)',  'Angle change from $t_{i-1}$ to $t_{i}$ (%)', 'Total growth during all time ($\mu m$)', 
-#         'Total speed during all time ($\mu m / \text{sec}$)', 'Total angle change (%)']
-
-# origin = shifted_axons[0][0] # set origin
-# prev_tip = origin
-
-# measurements = measure(shifted_axons, measurements, prev_tip, columns, origin, name)
