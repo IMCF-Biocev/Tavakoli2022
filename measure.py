@@ -1,7 +1,7 @@
 import os
 import logging
 import numpy as np
-from utils.utils import measure
+from src.utils import measure
 from collections import defaultdict
 import pandas as pd
 
@@ -59,14 +59,14 @@ def main():
 
             # read shifted_axons from the file
             growth_arr = np.loadtxt(file_path, delimiter=",")
-            name = str(group) # set name of the axon
-
+            genotype = str(group) # set name of the axon
+            name_of_measurement = str(file.split('.')[0]) # set name of the measurement
             # set columns names 
-            columns = ['Name of a measurement', 'Time', 'Coordinate of the tip node', 'Axon length ($\mu m$)', 'Speed from $t_{i-1}$ to $t_{i}$ ($\mu m / \text{sec}$)',
+            columns = ['Genotype', 'NameOfMeasurement', 'Time', 'CoordinateOfTip', 'Axon length ($\mu m$)', 'Speed from $t_{i-1}$ to $t_{i}$ ($\mu m / \text{sec}$)',
                 'Axon growth distance from $t_{i-1}$ to $t_{i}$ ($\mu m$)',  'Angle change from $t_{i-1}$ to $t_{i}$ (%)', 'Total growth during all time ($\mu m$)', 
                 'Total speed during all time ($\mu m / \text{sec}$)', 'Total angle change (%)']
             
-            measurements = measure(growth_arr, measurements, columns, name)
+            measurements = measure(growth_arr, measurements, columns, genotype, name_of_measurement)
 
         # save measurements to CSV file
         output_path = os.path.join(res_dir, 'measurements.csv')

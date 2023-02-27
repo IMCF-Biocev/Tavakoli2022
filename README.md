@@ -8,9 +8,11 @@ You will also need to install the following packages:
 
 numpy
 pandas
+glob
+
 You can install these packages using pip by running the following command:
 ```
-pip install numpy pandas
+pip install numpy pandas glob
 ```
 Alternatively, you can use the available cfg/environment.yml file with the complete conda environment. Read instructions [here](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file) on how to use it.
 ## Usage
@@ -28,4 +30,4 @@ parsed: A directory that contains the parsed data files.
 res: A directory that contains the output measurements report file.
 
 ## Acknowledgments
-This project was created for research purposes only at IMCF Biocev.
+This project was created for research purposes only created at IMCF Biocev.

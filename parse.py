@@ -3,7 +3,7 @@ import logging
 import numpy as np
 import glob
 
-from utils.utils import read_axon, shift_axon
+from src.utils import read_axon, shift_axon
 
 
 logging.basicConfig(level=logging.INFO)
