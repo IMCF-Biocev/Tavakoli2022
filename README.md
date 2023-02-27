@@ -21,13 +21,15 @@ To run the full project you can use run.sh file. Set correct directory and activ
 ## Project Structure
 The project folder contains the following files and directories:
 
-README.md: The project README file, which provides an overview of the project.
-main.py: The main script file, which contains the main() function that runs the project.
-utils: A directory that contains utility functions used in the project.
-data: A directory that contains the raw and parsed data used in the project.
-raw: A directory that contains the raw data files.
-parsed: A directory that contains the parsed data files.
-res: A directory that contains the output measurements report file.
+- README.md: The project README file, which provides an overview of the project.
+- main.py: The main script file, which contains the main() function that runs the project.
+- src: A directory that contains utility functions used in the project.
+- data: A directory that contains the raw and parsed data used in the project.
+- raw: A directory that contains the raw data files.
+- parsed: A directory that contains the parsed data files.
+- res: A directory that contains the output measurements report file.
+- cfg: A directory that contains the configuration files.
+- run.sh A shell script that runs the project.
 
 ## Acknowledgments
 This project was created for research purposes only created at IMCF Biocev.
