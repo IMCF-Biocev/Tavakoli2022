@@ -40,7 +40,7 @@ def shift_axon(axons):
     shifted_axons = [axons - origin for axons in shifted_axons]
     return shifted_axons
 
-def measure(arr, measurements, columns, genotype, name_of_measurement):
+def measure(arr, measurements, columns, genotype, sample, name_of_measurement):
     ''' Measure axons and save the results to measurements dictionary'''
     origin = arr[0] # first coord
 
@@ -60,16 +60,17 @@ def measure(arr, measurements, columns, genotype, name_of_measurement):
 
     for i, node in enumerate(arr):
         measurements[columns[0]].append(genotype) # add name of a measurement
-        measurements[columns[1]].append(name_of_measurement) # add name of a measurement
+        measurements[columns[1]].append(sample) # add sample
+        measurements[columns[2]].append(name_of_measurement) # add name of a measurement
         current_time = i
-        measurements[columns[2]].append(current_time) # add time to measurements
+        measurements[columns[3]].append(current_time) # add time to measurements
 
         # add coords to measurements
-        measurements[columns[3]].append(node)
+        measurements[columns[4]].append(node)
 
         # compute the distance between first and last coord and add it to measurements
         axon_length = np.linalg.norm(node - origin)
-        measurements[columns[4]].append(axon_length)
+        measurements[columns[5]].append(axon_length)
         
         if i == 0:
             growth_dist = 0
@@ -90,21 +91,21 @@ def measure(arr, measurements, columns, genotype, name_of_measurement):
             angle = np.degrees(np.arccos(x @ y))
 
         # add speed to measurements
-        measurements[columns[5]].append(speed)
-        measurements[columns[6]].append(growth_dist)
-        measurements[columns[7]].append(180 - angle)
+        measurements[columns[6]].append(speed)
+        measurements[columns[7]].append(growth_dist)
+        measurements[columns[8]].append(180 - angle)
         
         prev_node = node
         prev_time = current_time
 
-        measurements[columns[8]].append(np.nan)
         measurements[columns[9]].append(np.nan)
         measurements[columns[10]].append(np.nan)
+        measurements[columns[11]].append(np.nan)
     
 
-    measurements[columns[8]][-1] = total_growth
-    measurements[columns[9]][-1] = total_speed
-    measurements[columns[10]][-1] = total_angle
+    measurements[columns[9]][-1] = total_growth
+    measurements[columns[10]][-1] = total_speed
+    measurements[columns[11]][-1] = total_angle
 
     measurements = pd.DataFrame(measurements)
     # measurements.to_csv('measurements.csv', index=False)

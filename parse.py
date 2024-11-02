@@ -9,7 +9,7 @@ from src.utils import read_axon, shift_axon
 logging.basicConfig(level=logging.INFO)
 
 
-def parse_raw_data(folder_name, group, name):
+def parse_raw_data(folder_name, group, sample, name):
     """
     Parses raw data into the data suitable for measurements.
 
@@ -32,7 +32,7 @@ def parse_raw_data(folder_name, group, name):
         growth = np.array([axon[-1] for axon in shifted_axons])
 
         # save growth to CSV file
-        output_dir = os.path.join("data", "parsed", group)
+        output_dir = os.path.join("data", "parsed", group, sample)
         os.makedirs(output_dir, exist_ok=True)
 
         output_path = os.path.join(output_dir, f"{name}.csv")
@@ -64,22 +64,25 @@ def main():
     for group_folder in glob.glob(os.path.join(raw_data_dir, '*')):
         if not os.path.isdir(group_folder):
             continue
-
         group = os.path.basename(group_folder)
-        logging.info(f"Parsing data from group: {group}")
 
-        for subfolder in glob.glob(os.path.join(group_folder, '*')):
-            if not os.path.isdir(subfolder):
+        for sample_folder in glob.glob(os.path.join(group_folder, '*')):
+            if not os.path.isdir(sample_folder):
                 continue
+            sample = os.path.basename(sample_folder)
+            logging.info(f"Parsing data from group: {sample}")
+            for subfolder in glob.glob(os.path.join(sample_folder, '*')):
+                if not os.path.isdir(subfolder):
+                    continue
 
-            name = os.path.basename(subfolder)
-            logging.info(f"Parsing data from subfolder: {name}")
+                name = os.path.basename(subfolder)
+                logging.info(f"Parsing data from subfolder: {name}")
 
-            if os.listdir(subfolder):
-                parse_raw_data(subfolder, group, name)
-                logging.info(f"Data from {name} were parsed and saved to CSV file")
-            else:
-                logging.warning(f"Subfolder {name} is empty")
+                if os.listdir(subfolder):
+                    parse_raw_data(subfolder, group, sample, name)
+                    logging.info(f"Data from {name} were parsed and saved to CSV file")
+                else:
+                    logging.warning(f"Subfolder {name} is empty")
 
 
 if __name__ == "__main__":
