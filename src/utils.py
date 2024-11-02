@@ -75,12 +75,12 @@ def measure(arr, measurements, columns, genotype, sample, name_of_measurement):
         if i == 0:
             growth_dist = 0
             speed = 0
-            angle = 0
+            angle = 180
         else: 
             growth_dist = np.linalg.norm(node - prev_node) # compute growth distance as a norm of a vector between two points
             speed = growth_dist / (current_time - prev_time) # compute speed as a distance between two points divided by the time difference, even though time difference is always 1 in our case
             
-            prev_prev_node = arr[i - 2] if i >= 2 else origin
+            prev_prev_node = arr[i - 2] if i >= 2 else [0, 0]
 
             x = prev_prev_node - prev_node
             x = x / np.linalg.norm(x)
